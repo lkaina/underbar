@@ -55,16 +55,31 @@ var _ = { };
     // TIP: Here's an example of a function that needs to iterate, which we've
     // implemented for you. Instead of using a standard `for` loop, though,
     // it uses the iteration helper `each`, which you will need to write.
-  };
+    for (var i = 0; i < array.length; i++) {
+        if (array[i] === target) {
+            return i;
+        }
+    }
+    return -1;
+ };
 
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, iterator) {
+     //var args = arguments;
+     var valid = [];
+     for (var el in collection) {
+        if (iterator(el) === false) {
+            valid.push(collection[el]);
+        }
+      }
+     return valid;
   };
 
   // Return all elements of an array that don't pass a truth test.
   _.reject = function(collection, iterator) {
     // TIP: see if you can re-use _.select() here, without simply
     // copying code in and modifying it
+   
   };
 
   // Produce a duplicate-free version of the array.
