@@ -165,6 +165,16 @@ var _ = { };
   //   }, 0); // should be 6
   //
   _.reduce = function(collection, iterator, initialValue) {
+    if (initialValue == undefined) {
+      var initialValue = 0;
+    }
+    var results = [];
+    _.each(collection, function(value) {
+      var lastVal = iterator(initialValue, value);
+      results.push(lastVal);
+      initialValue = lastVal;
+    });
+    return results[results.length - 1];
   };
 
   // Determine if the array or object contains a given value (using `===`).
