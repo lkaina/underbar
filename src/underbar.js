@@ -27,63 +27,84 @@ var _ = { };
   _.last = function(array, n) {
     if (typeof n === 'undefined') {
         return array.pop();
-    };
+    }
     if (n >= array.length) {
         return array;
-    };
+    }
     return array.slice(array.length-n);
   };
 
   // Call iterator(value, key, collection) for each element of collection.
   // Accepts both arrays and objects.
+ 
   _.each = function(collection, iterator) {
-     if (typeof collection === 'object') {
+    if (Array.isArray(collection)) {
+       for (var i = 0; i < collection.length; i++) {
+          iterator(collection[i], i, collection);
+       }
+    }
+    else {
         for (var i in collection) {
-            iterator(collection[i], i, collection);
+          iterator(collection[i], i, collection);
         }
-     }
-     else if (typeof collection === 'array') {
-        for (var i = 0; i < collection.length; i++) {
-            iterator(collection[i], i, collection);
-        }
-     }
+    }
   };
-
+  
   // Returns the index at which value can be found in the array, or -1 if value
   // is not present in the array.
   _.indexOf = function(array, target){
     // TIP: Here's an example of a function that needs to iterate, which we've
     // implemented for you. Instead of using a standard `for` loop, though,
     // it uses the iteration helper `each`, which you will need to write.
-    for (var i = 0; i < array.length; i++) {
-        if (array[i] === target) {
-            return i;
-        }
-    }
-    return -1;
+    var targetIndex = -1;
+    _.each(array, function(value, i) {
+      if (value === target  && targetIndex === -1) {
+        targetIndex = i;
+      }
+    });
+    return targetIndex;
  };
 
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, iterator) {
-     //var args = arguments;
      var valid = [];
-     for (var el in collection) {
-        if (iterator(el) === false) {
-            valid.push(collection[el]);
-        }
+     _.each(collection, function(value) {
+      if (iterator(value) === true) {
+        valid.push(value);
       }
+     });
      return valid;
   };
-
+  
   // Return all elements of an array that don't pass a truth test.
   _.reject = function(collection, iterator) {
     // TIP: see if you can re-use _.select() here, without simply
     // copying code in and modifying it
-   
+    
+    return _.filter(collection, function(value) {
+       return !iterator(value);
+    });
   };
-
+  
   // Produce a duplicate-free version of the array.
   _.uniq = function(array) {
+    var noDup = [array[0]];
+    for (var i = 1; i < array.length; i++) {
+      var j = 0;
+      var dupCount = 0;
+      while (j < noDup.length &&  dupCount < 1) {
+        if (array[i] === noDup[j]) {
+          dupCount++;
+        }
+        else if (j + 1 === noDup.length) { 
+          noDup.push(array[i]);
+        }
+        else {
+          j++;
+        }
+      }
+    }
+    return noDup;
   };
 
 
@@ -92,6 +113,12 @@ var _ = { };
     // map() is a useful primitive iteration function that works a lot
     // like each(), but in addition to running the operation on all
     // the members, it also maintains an array of results.
+    var results = [];
+    
+    _.each(array, function(value) {
+      results.push(iterator(value));
+    });  
+    return results;
   };
 
   /*
@@ -114,6 +141,14 @@ var _ = { };
 
   // Calls the method named by methodName on each value in the list.
   _.invoke = function(list, methodName, args) {
+    return _.map(list, function(value) {
+      if (typeof methodName === 'function')  {
+        return methodName.apply(value, args);
+      }
+      else {
+        return value[methodName](args);
+      }
+    });
   };
 
   // Reduces an array or object to a single value by repetitively calling
