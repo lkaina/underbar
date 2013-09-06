@@ -37,15 +37,15 @@ var _ = { };
   // Call iterator(value, key, collection) for each element of collection.
   // Accepts both arrays and objects.
  
-  _.each = function(collection, iterator) {
+  _.each = function(collection, iteratorEach) {
     if (Array.isArray(collection)) {
        for (var i = 0; i < collection.length; i++) {
-          iterator(collection[i], i, collection);
+          iteratorEach(collection[i], i, collection);
        }
     }
     else {
         for (var i in collection) {
-          iterator(collection[i], i, collection);
+          iteratorEach(collection[i], i, collection);
         }
     }
   };
@@ -66,10 +66,10 @@ var _ = { };
  };
 
   // Return all elements of an array that pass a truth test.
-  _.filter = function(collection, iterator) {
+  _.filter = function(collection, iteratorFilter) {
      var valid = [];
      _.each(collection, function(value) {
-      if (iterator(value) === true) {
+      if (iteratorFilter(value) === true) {
         valid.push(value);
       }
      });
@@ -77,12 +77,12 @@ var _ = { };
   };
   
   // Return all elements of an array that don't pass a truth test.
-  _.reject = function(collection, iterator) {
+  _.reject = function(collection, iteratorReject) {
     // TIP: see if you can re-use _.select() here, without simply
     // copying code in and modifying it
     
     return _.filter(collection, function(value) {
-       return !iterator(value);
+       return !iteratorReject(value);
     });
   };
   
@@ -109,14 +109,14 @@ var _ = { };
 
 
   // Return the results of applying an iterator to each element.
-  _.map = function(array, iterator) {
+  _.map = function(array, iteratorMap) {
     // map() is a useful primitive iteration function that works a lot
     // like each(), but in addition to running the operation on all
     // the members, it also maintains an array of results.
     var results = [];
     
     _.each(array, function(value) {
-      results.push(iterator(value));
+      results.push(iteratorMap(value));
     });  
     return results;
   };
@@ -164,13 +164,13 @@ var _ = { };
   //     return total + number;
   //   }, 0); // should be 6
   //
-  _.reduce = function(collection, iterator, initialValue) {
+  _.reduce = function(collection, iteratorReduce, initialValue) {
     if (initialValue == undefined) {
       var initialValue = 0;
     }
     var results = [];
     _.each(collection, function(value) {
-      var lastVal = iterator(initialValue, value);
+      var lastVal = iteratorReduce(initialValue, value);
       results.push(lastVal);
       initialValue = lastVal;
     });
@@ -191,13 +191,29 @@ var _ = { };
 
 
   // Determine whether all of the elements match a truth test.
-  _.every = function(collection, iterator) {
+  _.every = function(collection, iteratorEvery) {
     // TIP: Try re-using reduce() here.
+    if (Array.isArray(collection)) {
+      if (collection.length === 0) {
+        return true;
+      }
+    }
+    if (typeof iteratorEvery == 'undefined') {
+      var iteratorEvery = function(value) {
+        return value;
+      };
+    }
+    return _.reduce(collection, function(match, value) {
+        if (iteratorEvery(value) && match) {
+          return true;
+        }
+        return false;
+    }, true);
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
-  _.some = function(collection, iterator) {
+  _.some = function(collection, iteratorSome) {
     // TIP: There's a very clever way to re-use every() here.
   };
 
