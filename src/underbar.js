@@ -12,9 +12,22 @@ var _ = { };
    * of values; in JavaScript, a 'collection' is something that can contain a
    * number of values--either an array or an object.
    */
+   
+   // Check if passed collection is empty
+  _.empty = function(collection) {
+    if (Array.isArray(collection)) {
+      if (collection.length === 0) { return true; }
+    }
+    else {
+      for (var key in collection) {
+        if (!(collection.hasOwnProperty(key))) { return true; }
+      }
+    }
+    return false;
+  };
 
   // Return an array of the first n elements of an array. If n is undefined,
-  // return just the first element.
+  // return just the first element. 
   _.first = function(array, n) {
     if (typeof n === 'undefined') {
         return array[0];
@@ -193,20 +206,14 @@ var _ = { };
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iteratorEvery) {
     // TIP: Try re-using reduce() here.
-    if (Array.isArray(collection)) {
-      if (collection.length === 0) {
-        return true;
-      }
-    }
+    // Return true if array is empty.
+    if (_.empty(collection)) { return true; }
+    // If no iterator passed, return values of collection
     if (typeof iteratorEvery == 'undefined') {
-      var iteratorEvery = function(value) {
-        return value;
-      };
+      var iteratorEvery = function(value) { return value; };
     }
     return _.reduce(collection, function(match, value) {
-        if (iteratorEvery(value) && match) {
-          return true;
-        }
+        if (iteratorEvery(value) && match) { return true; }
         return false;
     }, true);
   };
@@ -215,6 +222,24 @@ var _ = { };
   // provided, provide a default one
   _.some = function(collection, iteratorSome) {
     // TIP: There's a very clever way to re-use every() here.
+    if (_.empty(collection)) { return false };
+    if (typeof iteratorSome == 'undefined') {
+      var iteratorSome = function(value) { return value };
+    }
+    if (Array.isArray(collection)) {
+      for (var i = 0; i < collection.length; i++) {
+        //var newArray = [collection[i]];
+        if (_.every([collection[i]], iteratorSome)) { return true; }
+      }
+      return false;
+    }
+    else {
+      for (var key in collection) {
+        //var newArray = [collection[key]];
+        if (_.every([collection[key]], iteratorSome)) { return true; }
+      }
+      return false;
+    }
   };
 
 
