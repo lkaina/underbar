@@ -292,6 +292,7 @@ var _ = { };
     // time it's called.
     var alreadyCalled = false;
     var result;
+
     // TIP: We'll return a new function that delegates to the old one, but only
     // if it hasn't been called before.
     return function(){
@@ -313,8 +314,18 @@ var _ = { };
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    var result = {};
+    
+    return function() {
+      var firstArg = arguments[0];
+      if (result.hasOwnProperty(firstArg)) { return result[firstArg]; }
+      else { 
+        result[firstArg] = func.apply(this, arguments); 
+        return result[firstArg];
+      }
+    };
   };
-
+  
   // Delays a function for the given number of milliseconds, and then calls
   // it with the arguments supplied.
   //
