@@ -228,18 +228,15 @@ var _ = { };
     }
     if (Array.isArray(collection)) {
       for (var i = 0; i < collection.length; i++) {
-        //var newArray = [collection[i]];
         if (_.every([collection[i]], iteratorSome)) { return true; }
       }
-      return false;
     }
     else {
       for (var key in collection) {
-        //var newArray = [collection[key]];
         if (_.every([collection[key]], iteratorSome)) { return true; }
       }
-      return false;
     }
+    return false;
   };
 
 
@@ -262,11 +259,24 @@ var _ = { };
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    var args = Array.prototype.slice.call(arguments);
+    var newProps = args.slice(1);
+    _.each(newProps, function(newObj) {
+      for (var key in newObj) { obj[key] = newObj[key]; }
+    });
+    return obj;
   };
-
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    var args = Array.prototype.slice.call(arguments);
+    var newProps = args.slice(1);
+    _.each(newProps, function(newObj) {
+      for (var key in newObj) { 
+        if (!(obj.hasOwnProperty(key))) { obj[key] = newObj[key]; }
+      }
+    });
+    return obj;
   };
 
 
