@@ -259,26 +259,22 @@ var _ = { };
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
-    var args = Array.prototype.slice.call(arguments);
-    var newProps = args.slice(1);
-    _.each(newProps, function(newObj) {
-      for (var key in newObj) { obj[key] = newObj[key]; }
-    });
-    return obj;
-  };
-  // Like extend, but doesn't ever overwrite a key that already
-  // exists in obj
-  _.defaults = function(obj) {
-    var args = Array.prototype.slice.call(arguments);
-    var newProps = args.slice(1);
-    _.each(newProps, function(newObj) {
-      for (var key in newObj) { 
-        if (!(obj.hasOwnProperty(key))) { obj[key] = newObj[key]; }
-      }
-    });
+    for (var i = 1; i < arguments.length; i++) {
+      for (var key in arguments[i]) { obj[key] = arguments[i][key]; }
+    }
     return obj;
   };
 
+  // Like extend, but doesn't ever overwrite a key that already
+  // exists in obj
+  _.defaults = function(obj) {
+    for (var i = 1; i < arguments.length; i++) {
+      for (var key in arguments[i]) { 
+        if (!(obj.hasOwnProperty(key))) { obj[key] = arguments[i][key]; }
+      }
+    }
+    return obj;
+  };
 
   /**
    * FUNCTIONS
