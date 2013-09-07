@@ -347,6 +347,35 @@ var _ = { };
 
   // Shuffle an array.
   _.shuffle = function(array) {
+    
+    var newArray = [];
+    var arrayLen = array.length;
+    var arrayCopy = array.slice(0);
+
+    for (var i = 0; i < arrayLen; i++) {
+      var randNum = Math.floor(Math.random() * arrayCopy.length);
+      newArray[i] = arrayCopy[randNum];
+      arrayCopy.splice(randNum, 1);
+    }
+    return newArray;
+    /*
+    var randArray = [];
+    for (var i = 0; i < array.length; i++) {
+      randArray[i] = Math.random();
+    }
+    var newArray = [];
+    for (var j = 0; j < array.length; j++) {
+      var indexVal = 0;
+      var randCopy = randArray.slice(0);
+      var popVal = randCopy.splice(j, 1);
+      for (var k = 0; k < randCopy.length; k++) {
+        if (popVal[0] > randCopy[k]) { indexVal++; }
+      }
+      newArray[indexVal] = array[j];
+    }
+
+    return newArray;
+    */
   };
 
 
